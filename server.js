@@ -23,6 +23,7 @@ io.sockets.on('connection', function(socket){
 
     socket.on('disconnect', function(data){
         connections.splice(connections.indexOf(socket), 1);
+        removeFromLobby(socket);
         console.log("dis, %s sockets", connections.length);
 
     });
@@ -33,12 +34,38 @@ io.sockets.on('connection', function(socket){
     });
     socket.on('CheckServers', function(data){
         socket.emit('ActiveServers', {SInfo: lobbyInfo()});
-
-
     });
     socket.on('leave', function(data){
         lobby.splice(connections.indexOf(socket),1);
     });
+    socket.on('host', function(data){
+        if(lobbies[data].length < 1){
+            lobbies[data].push(socket);
+            socket.emit('PlayerNum', {Pnum: lobbies[data].length});
+            console.log("hosted")
+        }
+        else{
+           // socket.emit('CannotHost', {Pnum: lobbies[data].length});
+        }
+        
+    });
+    socket.on('join', function(data){
+        var game = parseInt(data[0])
+        if(lobbies[game].length == 0){
+            lobbies[game].push(socket);
+            socket.emit('PlayerNum', {Pnum: lobbies[game].length});
+            //lobbies[game][0].emit('ConnectedPlayerName', {pName : data[1]});
+        }
+        else if(lobbies[game].length == 1){
+            lobbies[game].push(socket);
+            socket.emit('PlayerNum', {Pnum: lobbies[game].length});
+            lobbies[game][0].emit('ConnectedPlayerName', {Pname : data[1]});
+            //socket.emit('CannotJoin', {Pnum: lobbies[data].length});
+        }
+        
+    });
+
+
     
     
 });
@@ -59,10 +86,19 @@ function test2(){
 function lobbyInfo(){
     var players = [];
      for(i in lobbies){
-         players.push(i.length);
+         players.push(lobbies[i].length);
+         
      }
      return players;
 
+}
+function removeFromLobby(socket){
+    for(i in lobbies){
+        if(lobbies[i].indexOf(socket) != -1){
+            lobbies[i].splice(lobbies[i].indexOf(socket),1);
+            return;
+        }
+    }
 }
 
 // if(connections.length == 2){
