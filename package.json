@@ -9,7 +9,8 @@
   "author": "Chase Morgan",
   "license": "ISC",
   "dependencies": {
-    "socket.io": "*",
-    "express": "*"
+    "@socket.io/admin-ui": "^0.2.0",
+    "express": "*",
+    "socket.io": "*"
   }
 }
