@@ -1,4 +1,5 @@
 var express = require('express');
+const { SocketAddress } = require('net');
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server) 
@@ -38,17 +39,28 @@ io.sockets.on('connection', function(socket){
     socket.on('leave', function(data){
         lobby.splice(connections.indexOf(socket),1);
     });
-    socket.on('host', function(data){
-        if(lobbies[data].length < 1){
-            lobbies[data].push(socket);
-            socket.emit('PlayerNum', {Pnum: lobbies[data].length});
-            console.log("hosted")
-        }
-        else{
-           // socket.emit('CannotHost', {Pnum: lobbies[data].length});
-        }
+    socket.on('joinAckName', function(data){
+        var game = parseInt(data[0])
+        lobbies[game][1].emit('ConnectedPlayerName', {Pname : data[1]});
+    });
+    socket.on('lobbyInfo', function(data){
+        lobbies[data[0]][1].emit('LobbyInfo', {info : [data[1],data[2]]});
+        
         
     });
+    socket.on('ready', function(data){
+        var index = lobbies[data[0]].indexOf(socket)
+        if(index == 0){
+            index = 1
+        }
+        else{
+            index = 0
+        }
+
+        lobbies[data[0]][index].emit('Ready', {Rstatus : data[1]});
+    });
+    
+    
     socket.on('join', function(data){
         var game = parseInt(data[0])
         if(lobbies[game].length == 0){
@@ -96,6 +108,7 @@ function removeFromLobby(socket){
     for(i in lobbies){
         if(lobbies[i].indexOf(socket) != -1){
             lobbies[i].splice(lobbies[i].indexOf(socket),1);
+           // lobbies[i][0].emit('PlayerLeft');
             return;
         }
     }
