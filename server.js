@@ -1,5 +1,6 @@
 var express = require('express');
 const { SocketAddress } = require('net');
+const { instrument } = require("@socket.io/admin-ui");
 var app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server) 
@@ -8,7 +9,6 @@ var io = require('socket.io')(server)
 
 var connections = [];
 var servers = [1,2,3,4,5];
-//var lobbies = servers.map(e => ({server: e ,sockets: []}));
 var lobbies = [[],[],[],[],[]];
 var active = [false,false,false,false,false]
 
