@@ -30,14 +30,9 @@ io.sockets.on('connection', function(socket){
     });
     socket.on('CheckPlayers', function(data){
         socket.emit('ActivePlayers', {PInfo: connections.length});
-
-
     });
     socket.on('CheckServers', function(data){
         socket.emit('ActiveServers', {SInfo: lobbyInfo()});
-    });
-    socket.on('leave', function(data){
-        lobby.splice(connections.indexOf(socket),1);
     });
     socket.on('joinAckName', function(data){
         var game = parseInt(data[0])
@@ -77,23 +72,12 @@ io.sockets.on('connection', function(socket){
         
     });
 
-
-    
-    
+    socket.on('leave', function(data){
+        removeFromLobby(socket);
+    });
+  
 });
 
-function test2(){
-    if(connections.length==1){
-        var sender = connections[0];
-        //var recv = connections[1];
-    
-        sender.on('lo', function(data){
-            console.log(data[0], data[1]);
-           // io.recv.emit('position',{newp: data});
-        });
-    
-    };
-}
 
 function lobbyInfo(){
     var players = [];
@@ -108,7 +92,9 @@ function removeFromLobby(socket){
     for(i in lobbies){
         if(lobbies[i].indexOf(socket) != -1){
             lobbies[i].splice(lobbies[i].indexOf(socket),1);
-           // lobbies[i][0].emit('PlayerLeft');
+            if(lobbies[i].length>0){
+                lobbies[i][0].emit("playerLeft");
+            }
             return;
         }
     }
