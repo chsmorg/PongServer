@@ -116,6 +116,13 @@ io.sockets.on('connection', function(socket){
     socket.on('leave', function(data){
         removeFromLobby(socket);
     });
+
+    socket.on('ConnectedPlayerInfo', function(data){
+        if(lobbies[data[0]].length > 1){
+            lobbies[data[0]][0].emit('ConnectedPlayerInfo', {CPinfo : data[1]});
+        }
+
+    });
   
 });
 
