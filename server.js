@@ -81,6 +81,16 @@ io.sockets.on('connection', function(socket){
         }
         
     });
+
+    socket.on('GameEnd', function(data){
+        if(lobbies[data[0]].length==2){
+            lobbies[data[0]][1].emit('GameEnd', {winner : [data[1]]});
+            active[data[0]] = false;
+            
+        }
+        
+    });
+   
     socket.on('ready', function(data){
         if(lobbies[data[0]].length==2){
             var index = lobbies[data[0]].indexOf(socket)
@@ -125,13 +135,13 @@ io.sockets.on('connection', function(socket){
     });
 
     socket.on('ConnectedPlayerInfo', function(data){
-        if(lobbies[data[0]].length > 1){
+        if(lobbies[data[0]].length == 2){
             lobbies[data[0]][0].emit('ConnectedPlayerInfo', {CPinfo : data[1]});
         }
 
     });
     socket.on('GamePositions', function(data){
-        if(lobbies[data[0]].length > 1){
+        if(lobbies[data[0]].length == 2){
             lobbies[data[0]][1].emit('GamePositions', {Ginfo : data[1]});
         }
 
