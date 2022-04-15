@@ -26,8 +26,8 @@ var io = require('socket.io')(server)
 
 
 
-httpServer.listen(11328);
-//server.listen(process.env.PORT || 11328);
+//httpServer.listen(11328);
+server.listen(process.env.PORT || 11328);
 console.log("server running...");
 
 
