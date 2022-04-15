@@ -1,24 +1,24 @@
-//var express = require('express');
-//const { SocketAddress } = require('net');
-const { createServer } = require("http");
-const { Server } = require("socket.io");
-const { instrument } = require("@socket.io/admin-ui");
-const { SocketAddress } = require("net");
-//var app = express();
-//var server = require('http').createServer(app);
-//var io = require('socket.io')(server) 
-const httpServer = createServer();
+var express = require('express');
+const { SocketAddress } = require('net');
+//const { createServer } = require("http");
+//const { Server } = require("socket.io");
+//const { instrument } = require("@socket.io/admin-ui");
+//const { SocketAddress } = require("net");
+var app = express();
+var server = require('http').createServer(app);
+var io = require('socket.io')(server) 
+// const httpServer = createServer();
 
-const io = new Server(httpServer, {
-    cors: {
-      origin: ["https://admin.socket.io"],
-      credentials: true
-    }
-  });
+// const io = new Server(httpServer, {
+//     cors: {
+//       origin: ["https://admin.socket.io"],
+//       credentials: true
+//     }
+//   });
 
-instrument(io, {
-    auth: false
-  });
+// instrument(io, {
+//     auth: false
+//   });
   var connections = [];
   var servers = [1,2,3,4,5];
   var lobbies = [[],[],[],[],[]];
